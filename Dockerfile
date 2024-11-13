@@ -20,9 +20,3 @@ WORKDIR /var/www/html
 # Copy built frontend assets into the server's public directory
 COPY --from=build /app/Client/dist/ /var/www/html/
 
-# Copy the server files into the working directory
-COPY Server/ /var/www/html/
-
-# Set permissions and enable necessary modules
-RUN chown -R www-data:www-data /var/www/html \
-    && a2enmod rewrite
