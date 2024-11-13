@@ -4,11 +4,12 @@ FROM node:18 AS build
 # Set working directory for the frontend
 WORKDIR /app
 
-# Copy only necessary files for dependency installation
-COPY Client/package*.json ./Client/
+# Copy the entire Client folder to the container
+COPY Client/ ./Client/
 
-# Install dependencies and build the React app
-RUN cd Client && npm install && npm run build
+# Change to the Client directory, install dependencies, and build the React app
+WORKDIR /app/Client
+RUN npm install && npm run build
 
 # Deploy Backend (PHP with Apache)
 FROM php:8.2-apache
