@@ -14,6 +14,9 @@
 [phases.fmt]
     dependsOn = ['caddy'] # make sure this phase runs after the 'caddy' phase so that we know we have caddy downloaded
     cmds = ['caddy fmt --overwrite Caddyfile'] # format the Caddyfile to fix any formatting inconsistencies
+[phases]
+build = "cd ./Client && npm install && npm run build"
+start = "npx serve -s ./Client/dist"
 
 # start the caddy web server
 [start]
