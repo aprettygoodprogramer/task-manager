@@ -4,10 +4,10 @@ FROM node:18 AS build
 # Set working directory for the frontend
 WORKDIR /app
 
-# Copy the entire Client folder to the container
+# Copy the entire Client folder into the container
 COPY Client/ ./Client/
 
-# Change to the Client directory, install dependencies, and build the React app
+# Change to the Client directory and install dependencies
 WORKDIR /app/Client
 RUN npm install && npm run build
 
@@ -20,7 +20,7 @@ WORKDIR /var/www/html
 # Copy built frontend assets into the server's public directory
 COPY --from=build /app/Client/dist/ /var/www/html/
 
-# Copy the server files
+# Copy the server files into the working directory
 COPY Server/ /var/www/html/
 
 # Set permissions and enable necessary modules
