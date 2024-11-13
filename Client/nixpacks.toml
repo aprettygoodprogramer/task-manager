@@ -22,7 +22,7 @@
 
 # Define the start phase
 [phases.start]
-    cmds = ['npx serve -s ./Client/dist']
+    cmds = ['npm run serve']
 
 # Start the Caddy web server
 [start]
