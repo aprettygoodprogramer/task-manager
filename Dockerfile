@@ -11,10 +11,14 @@ RUN cd Client && npm install
 # Copy the rest of the Client files
 COPY Client ./Client
 
+# Pass the backend URL to the frontend build
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
+
 # Build the React app
 RUN cd Client && npm run build
 
-# Step 2: Set up Apache (httpd) to serve the React app
+# Step 2: Set up Apache to serve the React app
 FROM httpd:2.4
 WORKDIR /usr/local/apache2/htdocs/
 
