@@ -12,12 +12,10 @@ interface LoginResponse {
 const App: React.FC = () => {
   const handleLogin = async (username: string, password: string) => {
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      if (!backendUrl) {
-        throw new Error('Backend URL is not configured');
-      }
+      const backendUrl = "https://aware-beauty.railway.internal:3000";
+      
 
-      const response = await fetch(`${backendUrl}/login`, {
+      const response = await fetch(`${backendUrl}/Server/api`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
