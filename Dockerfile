@@ -1,22 +1,31 @@
-# Build Frontend (React)
+# Step 1: Build the React app
 FROM node:18 AS build
-
-# Set working directory for the frontend
 WORKDIR /app
 
-# Copy the entire Client folder into the container
-COPY Client/ ./Client/
+# Copy the Client package files
+COPY Client/package.json Client/package-lock.json ./Client/
 
-# Change to the Client directory and install dependencies
-WORKDIR /app/Client
-RUN npm install && npm run build
+# Install dependencies in the Client directory
+RUN cd Client && npm install
 
-# Deploy Backend (PHP with Apache)
-FROM php:8.2-apache
+# Copy the rest of the Client files
+COPY Client ./Client
 
-# Set working directory for the backend
-WORKDIR /var/www/html
+# Build the React app
+RUN cd Client && npm run build
 
-# Copy built frontend assets into the server's public directory
-COPY --from=build /app/Client/dist/ /var/www/html/
+# Step 2: Set up Apache (httpd) to serve the React app
+FROM httpd:2.4
+WORKDIR /usr/local/apache2/htdocs/
 
+# Clean the default Apache directory
+RUN rm -rf /usr/local/apache2/htdocs/*
+
+# Copy the build files from the previous stage
+COPY --from=build /app/Client/dist/ /usr/local/apache2/htdocs/
+
+# Expose port 80
+EXPOSE 80
+
+# Run Apache in the foreground
+CMD ["httpd-foreground"]

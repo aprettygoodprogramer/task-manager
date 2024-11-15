@@ -1,9 +1,6 @@
-// src/App.tsx
-
 import React from 'react';
-import axios from 'axios'; // Make sure to install axios: npm install axios
-import Text from './componets/text';
-import LoginTextInput from './componets/loginTextInput';
+import Text from './components/text';
+import LoginTextInput from './components/loginTextInput';
 import './App.css';
 import './index.css';
 
@@ -15,34 +12,47 @@ interface LoginResponse {
 const App: React.FC = () => {
   const handleLogin = async (username: string, password: string) => {
     try {
-      const response = await axios.post<LoginResponse>(
-        'https://your-railway-app.up.railway.app/login.php',
-        { username, password },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      if (!backendUrl) {
+        throw new Error('Backend URL is not configured');
+      }
 
-      if (response.data.success) {
-        console.log('Login successful:', response.data.message);
-            } else {
-        console.log('Login failed:', response.data.message);
+      const response = await fetch(`${backendUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Login error:', errorData.error);
+        alert(`Error: ${errorData.error}`);
+        return;
+      }
+
+      const data: LoginResponse = await response.json();
+
+      if (data.success) {
+        alert('Login successful!');
+      } else {
+        alert(`Login failed: ${data.message}`);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('An unexpected error occurred:', error);
+      alert('An error occurred while logging in. Please try again.');
     }
   };
 
   return (
     <div className="App">
-      <Text size="large" weight="bold" color='orange' className='h1' fontFamily='Courier New'>
+      <Text size="large" weight="bold" color="orange" className="h1" fontFamily="Courier New">
         Login To Task Manager!
       </Text>
       <LoginTextInput onSubmit={handleLogin} />
     </div>
   );
-}
+};
 
 export default App;
