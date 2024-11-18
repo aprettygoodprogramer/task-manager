@@ -1,25 +1,22 @@
 <?php
-require_once __DIR__ . '/vendor/autoload.php';
+$host = getenv('MYSQLHOST');
+$port = getenv('MYSQLPORT');
+$db = getenv('MYSQLDATABASE');
+$user = getenv('MYSQLUSER');
+$pass = getenv('MYSQLPASSWORD');
+$charset = 'utf8mb4';
 
-use Dotenv\Dotenv;
+$dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES => false,
+];
 
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
-function connectDatabase() {
-    $host = $_ENV['DATABASE_HOST'];
-    $db   = $_ENV['DATABASE_NAME'];
-    $user = $_ENV['DATABASE_USER'];
-    $pass = $_ENV['DATABASE_PASS'];
-    $port = $_ENV['DATABASE_PORT'];
-
-    try {
-        $dsn = "pgsql:host=$host;port=$port;dbname=$db;";
-        $pdo = new PDO($dsn, $user, $pass);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $pdo;
-    } catch (PDOException $e) {
-        die("Database connection failed: " . $e->getMessage());
-    }
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (PDOException $e) {
+    throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
+
 ?>
