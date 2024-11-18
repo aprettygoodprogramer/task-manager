@@ -9,13 +9,11 @@ require_once 'connectDatabase.php';
 $pdo = connectDatabase();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Fetch data (e.g., all tasks)
     $stmt = $pdo->query("SELECT * FROM tasks");
     $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode($tasks); // Send the data as JSON
+    echo json_encode($tasks); 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Add a new task
-    $input = json_decode(file_get_contents('php://input'), true); // Parse JSON body
+    $input = json_decode(file_get_contents('php://input'), true); 
     $stmt = $pdo->prepare("INSERT INTO tasks (title, description) VALUES (:title, :description)");
     $stmt->execute([
         ':title' => $input['title'],
@@ -23,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ]);
     echo json_encode(['message' => 'Task added successfully']);
 } else {
-    http_response_code(405); // Method not allowed
+    http_response_code(405); 
     echo json_encode(['error' => 'Method not allowed']);
 }
 ?>
