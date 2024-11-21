@@ -1,0 +1,13 @@
+[build]
+  builder = "heroku/php"
+
+[[services]]
+  name = "mysql"
+  type = "mysql"
+
+[env]
+  DB_HOST = "${{ mysql.internal.host }}"
+  DB_USER = "${{ mysql.internal.user }}"
+  DB_PASS = "${{ mysql.internal.password }}"
+  DB_NAME = "${{ mysql.internal.database }}"
+  DB_PORT = "${{ mysql.internal.port }}"
